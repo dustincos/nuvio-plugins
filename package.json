@@ -1,0 +1,17 @@
+{
+    "name": "nuvio-plugins",
+    "version": "1.0.0",
+    "description": "Streaming providers/plugins for Nuvio",
+    "main": "index.js",
+    "scripts": {
+        "build": "node build.js"
+    },
+    "devDependencies": {
+        "esbuild": "^0.20.0"
+    },
+    "dependencies": {
+        "cheerio-without-node-native": "^0.20.2",
+        "crypto-js": "^4.2.0",
+        "node-fetch": "^2.7.0"
+    }
+}
