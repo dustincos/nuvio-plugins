@@ -109,13 +109,14 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                 if (extracted && extracted.length > 0) {
                     extracted.forEach(link => {
                         const qualityStr = typeof link.quality === 'number' ? `${link.quality}p` : link.quality;
-                        const sizeStr = link.size ? `${(link.size / (1024 * 1024)).toFixed(2)} MB` : "";
+                        const sizeStr = link.size ? `${(link.size / (1024 * 1024 * 1024)).toFixed(2)} GB` : "";
                         const tagsStr = link.tags ? link.tags.split(' ').filter(t => t).join(' • ') : "";
                         
-                        const titleParts = [qualityStr, tagsStr, sizeStr].filter(p => p && p.trim() !== "");
+                        const nameParts = [link.server || link.source || "HubCloud", tagsStr].filter(p => p && p.trim() !== "");
+                        const titleParts = [qualityStr, sizeStr].filter(p => p && p.trim() !== "");
 
                         streams.push({
-                            name: link.server || link.source || "HubCloud",
+                            name: nameParts.join(" • "),
                             title: titleParts.join(" • "),
                             url: link.url,
                             quality: qualityStr,

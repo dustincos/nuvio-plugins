@@ -1,6 +1,6 @@
 /**
  * notorrent - Built from src/notorrent/
- * Generated: 2026-05-11T12:34:46.372Z
+ * Generated: 2026-05-11T12:52:07.152Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -98,10 +98,10 @@ function getStreams(tmdbId, mediaType, season, episode) {
         }
         const proxyHeaders = ((_b = (_a = item.behaviorHints) == null ? void 0 : _a.proxyHeaders) == null ? void 0 : _b.request) || {};
         const headers = Object.assign({}, ((_c = item.behaviorHints) == null ? void 0 : _c.headers) || {}, proxyHeaders);
-        const titleParts = [quality, language !== "Default" ? language : ""].filter((p) => p && p.trim() !== "");
+        const nameParts = ["NoTorrent", language !== "Default" ? language : ""].filter((p) => p && p.trim() !== "");
         streams.push({
-          name: "NoTorrent",
-          title: titleParts.join(" \u2022 ") || quality,
+          name: nameParts.join(" \u2022 "),
+          title: quality,
           url: item.url,
           quality,
           headers: Object.keys(headers).length > 0 ? headers : void 0,

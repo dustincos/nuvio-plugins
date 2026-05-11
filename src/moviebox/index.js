@@ -159,11 +159,11 @@ async function fetchMovieboxStreams(title, mediaType, season, episode) {
                     if (dlink) {
                         const res = d.resolution || 720;
                         const qualityStr = `${res}p`;
-                        const titleParts = [qualityStr, language].filter(p => p && p.trim() !== "");
+                        const nameParts = ["MovieBox", language].filter(p => p && p.trim() !== "");
 
                         streams.push({
-                            name: "MovieBox",
-                            title: titleParts.join(" • "),
+                            name: nameParts.join(" • "),
+                            title: qualityStr,
                             url: dlink,
                             quality: qualityStr,
                             headers: {

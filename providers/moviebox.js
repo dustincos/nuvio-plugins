@@ -1,6 +1,6 @@
 /**
  * moviebox - Built from src/moviebox/
- * Generated: 2026-05-11T12:34:46.369Z
+ * Generated: 2026-05-11T12:52:07.149Z
  */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -211,10 +211,10 @@ function fetchMovieboxStreams(title, mediaType, season, episode) {
             if (dlink) {
               const res = d.resolution || 720;
               const qualityStr = `${res}p`;
-              const titleParts = [qualityStr, language].filter((p) => p && p.trim() !== "");
+              const nameParts = ["MovieBox", language].filter((p) => p && p.trim() !== "");
               streams.push({
-                name: "MovieBox",
-                title: titleParts.join(" \u2022 "),
+                name: nameParts.join(" \u2022 "),
+                title: qualityStr,
                 url: dlink,
                 quality: qualityStr,
                 headers: {

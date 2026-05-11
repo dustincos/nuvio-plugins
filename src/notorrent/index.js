@@ -49,11 +49,11 @@ async function getStreams(tmdbId, mediaType, season, episode) {
             const proxyHeaders = item.behaviorHints?.proxyHeaders?.request || {};
             const headers = Object.assign({}, item.behaviorHints?.headers || {}, proxyHeaders);
 
-            const titleParts = [quality, language !== "Default" ? language : ""].filter(p => p && p.trim() !== "");
+            const nameParts = ["NoTorrent", language !== "Default" ? language : ""].filter(p => p && p.trim() !== "");
 
             streams.push({
-                name: "NoTorrent",
-                title: titleParts.join(" • ") || quality,
+                name: nameParts.join(" • "),
+                title: quality,
                 url: item.url,
                 quality: quality,
                 headers: Object.keys(headers).length > 0 ? headers : undefined,

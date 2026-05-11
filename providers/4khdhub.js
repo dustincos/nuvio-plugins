@@ -1,6 +1,6 @@
 /**
  * 4khdhub - Built from src/4khdhub/
- * Generated: 2026-05-11T12:34:46.343Z
+ * Generated: 2026-05-11T12:52:07.117Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -432,11 +432,12 @@ function getStreams(tmdbId, mediaType, season, episode) {
           if (extracted && extracted.length > 0) {
             extracted.forEach((link) => {
               const qualityStr = typeof link.quality === "number" ? `${link.quality}p` : link.quality;
-              const sizeStr = link.size ? `${(link.size / (1024 * 1024)).toFixed(2)} MB` : "";
+              const sizeStr = link.size ? `${(link.size / (1024 * 1024 * 1024)).toFixed(2)} GB` : "";
               const tagsStr = link.tags ? link.tags.split(" ").filter((t) => t).join(" \u2022 ") : "";
-              const titleParts = [qualityStr, tagsStr, sizeStr].filter((p) => p && p.trim() !== "");
+              const nameParts = [link.server || link.source || "HubCloud", tagsStr].filter((p) => p && p.trim() !== "");
+              const titleParts = [qualityStr, sizeStr].filter((p) => p && p.trim() !== "");
               streams.push({
-                name: link.server || link.source || "HubCloud",
+                name: nameParts.join(" \u2022 "),
                 title: titleParts.join(" \u2022 "),
                 url: link.url,
                 quality: qualityStr,
