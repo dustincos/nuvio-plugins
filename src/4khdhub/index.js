@@ -121,6 +121,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                             url: link.url,
                             quality: qualityStr,
                             size: sizeStr,
+                            subtitles: link.subtitles,
                             provider: "4khdhub"
                         });
                     });

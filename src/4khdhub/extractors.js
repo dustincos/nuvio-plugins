@@ -1,4 +1,5 @@
 import cheerio from 'cheerio-without-node-native';
+import CryptoJS from 'crypto-js';
 import { getIndexQuality, atob, rot13, cleanTitle, HEADERS } from './utils.js';
 
 export async function getRedirectLinks(url) {
@@ -45,6 +46,81 @@ export async function getRedirectLinks(url) {
     }
 }
 
+export async function vidStackExtractor(url) {
+    try {
+        const hash = url.split('#').pop().split('/').pop();
+        const baseUrl = new URL(url).origin;
+        const apiUrl = `${baseUrl}/api/v1/video?id=${hash}`;
+
+        const response = await fetch(apiUrl, { headers: { ...HEADERS, Referer: url } });
+        const encoded = (await response.text()).trim();
+
+        const key = CryptoJS.enc.Utf8.parse("kiemtienmua911ca");
+        const ivs = ["1234567890oiuytr", "0123456789abcdef"];
+
+        for (const ivStr of ivs) {
+            try {
+                const iv = CryptoJS.enc.Utf8.parse(ivStr);
+                const decrypted = CryptoJS.AES.decrypt(
+                    { ciphertext: CryptoJS.enc.Hex.parse(encoded) },
+                    key,
+                    { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
+                );
+                const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+                if (decryptedText && decryptedText.includes("source")) {
+                    const m3u8 = decryptedText.match(/"source":"(.*?)"/)?.[1]?.replace(/\\/g, '');
+
+                    // Extract subtitles
+                    const subtitles = [];
+                    const subtitleSection = decryptedText.match(/"subtitle":\{(.*?)\}/)?.[1];
+                    if (subtitleSection) {
+                        const subtitlePattern = /"([^"]+)":\s*"([^"]+)"/g;
+                        let subMatch;
+                        while ((subMatch = subtitlePattern.exec(subtitleSection)) !== null) {
+                            const lang = subMatch[1];
+                            const subPath = subMatch[2].split("#")[0].replace(/\\/g, '');
+                            if (subPath) {
+                                subtitles.push({
+                                    language: lang,
+                                    url: subPath.startsWith("http") ? subPath : `${baseUrl}${subPath}`
+                                });
+                            }
+                        }
+                    }
+
+                    if (m3u8) {
+                        return [{
+                            source: "HubStream",
+                            quality: "M3U8",
+                            url: m3u8.replace("https:", "http:"),
+                            headers: {
+                                "Referer": url,
+                                "Origin": url.split('/').pop()
+                            },
+                            subtitles: subtitles
+                        }];
+                    }
+                }
+            } catch (e) { }
+        }
+        return [];
+    } catch (e) { return []; }
+}
+
+export async function hbLinksExtractor(url) {
+    try {
+        const response = await fetch(url, { headers: { ...HEADERS, Referer: url } });
+        const data = await response.text();
+        const $ = cheerio.load(data);
+        const links = $("h3 a, h5 a, div.entry-content p a").map((i, el) => $(el).attr("href")).get();
+        const results = await Promise.all(links.map(l => loadExtractor(l, url)));
+        return results.flat().map(link => ({
+            ...link,
+            server: link.server || link.source
+        }));
+    } catch (e) { return []; }
+}
+
 export async function hubCloudExtractor(url, referer) {
     try {
         let currentUrl = url.replace("hubcloud.ink", "hubcloud.dad");
@@ -80,7 +156,7 @@ export async function hubCloudExtractor(url, referer) {
         const qualityStr = header.match(/(\d{3,4})[pP]/)?.[1];
         const quality = qualityStr ? parseInt(qualityStr) : 1080;
         const headerDetails = cleanTitle(header);
-        const labelExtras = (headerDetails ? `[${headerDetails}]` : "") + (size ? `[${size}]` : "");
+
         const sizeInBytes = (() => {
             const sizeMatch = size.match(/([\d.]+)\s*(GB|MB|KB)/i);
             if (!sizeMatch) return 0;
@@ -190,6 +266,8 @@ export async function loadExtractor(url, referer) {
         if (hostname.includes("hubcloud")) return await hubCloudExtractor(url, referer);
         if (hostname.includes("hubcdn")) return await hubCdnExtractor(url, referer);
         if (hostname.includes("pixeldrain")) return await pixelDrainExtractor(url);
+        if (hostname.includes("hblinks") || hostname.includes("hubstream.dad")) return await hbLinksExtractor(url);
+        if (hostname.includes("hubstream") || hostname.includes("vidstack")) return await vidStackExtractor(url);
 
         if (hostname.includes("hubdrive")) {
             const res = await fetch(url, { headers: { ...HEADERS, Referer: referer } });

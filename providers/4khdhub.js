@@ -1,6 +1,6 @@
 /**
  * 4khdhub - Built from src/4khdhub/
- * Generated: 2026-05-11T12:58:57.188Z
+ * Generated: 2026-05-11T13:40:34.191Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -139,6 +139,7 @@ function cleanTitle(title) {
 
 // src/4khdhub/extractors.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+var import_crypto_js = __toESM(require("crypto-js"));
 function getRedirectLinks(url) {
   return __async(this, null, function* () {
     try {
@@ -183,6 +184,82 @@ function getRedirectLinks(url) {
     }
   });
 }
+function vidStackExtractor(url) {
+  return __async(this, null, function* () {
+    var _a, _b, _c;
+    try {
+      const hash = url.split("#").pop().split("/").pop();
+      const baseUrl = new URL(url).origin;
+      const apiUrl = `${baseUrl}/api/v1/video?id=${hash}`;
+      const response = yield fetch(apiUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: url }) });
+      const encoded = (yield response.text()).trim();
+      const key = import_crypto_js.default.enc.Utf8.parse("kiemtienmua911ca");
+      const ivs = ["1234567890oiuytr", "0123456789abcdef"];
+      for (const ivStr of ivs) {
+        try {
+          const iv = import_crypto_js.default.enc.Utf8.parse(ivStr);
+          const decrypted = import_crypto_js.default.AES.decrypt(
+            { ciphertext: import_crypto_js.default.enc.Hex.parse(encoded) },
+            key,
+            { iv, mode: import_crypto_js.default.mode.CBC, padding: import_crypto_js.default.pad.Pkcs7 }
+          );
+          const decryptedText = decrypted.toString(import_crypto_js.default.enc.Utf8);
+          if (decryptedText && decryptedText.includes("source")) {
+            const m3u8 = (_b = (_a = decryptedText.match(/"source":"(.*?)"/)) == null ? void 0 : _a[1]) == null ? void 0 : _b.replace(/\\/g, "");
+            const subtitles = [];
+            const subtitleSection = (_c = decryptedText.match(/"subtitle":\{(.*?)\}/)) == null ? void 0 : _c[1];
+            if (subtitleSection) {
+              const subtitlePattern = /"([^"]+)":\s*"([^"]+)"/g;
+              let subMatch;
+              while ((subMatch = subtitlePattern.exec(subtitleSection)) !== null) {
+                const lang = subMatch[1];
+                const subPath = subMatch[2].split("#")[0].replace(/\\/g, "");
+                if (subPath) {
+                  subtitles.push({
+                    language: lang,
+                    url: subPath.startsWith("http") ? subPath : `${baseUrl}${subPath}`
+                  });
+                }
+              }
+            }
+            if (m3u8) {
+              return [{
+                source: "HubStream",
+                quality: "M3U8",
+                url: m3u8.replace("https:", "http:"),
+                headers: {
+                  "Referer": url,
+                  "Origin": url.split("/").pop()
+                },
+                subtitles
+              }];
+            }
+          }
+        } catch (e) {
+        }
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  });
+}
+function hbLinksExtractor(url) {
+  return __async(this, null, function* () {
+    try {
+      const response = yield fetch(url, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: url }) });
+      const data = yield response.text();
+      const $ = import_cheerio_without_node_native.default.load(data);
+      const links = $("h3 a, h5 a, div.entry-content p a").map((i, el) => $(el).attr("href")).get();
+      const results = yield Promise.all(links.map((l) => loadExtractor(l, url)));
+      return results.flat().map((link) => __spreadProps(__spreadValues({}, link), {
+        server: link.server || link.source
+      }));
+    } catch (e) {
+      return [];
+    }
+  });
+}
 function hubCloudExtractor(url, referer) {
   return __async(this, null, function* () {
     var _a;
@@ -218,7 +295,6 @@ function hubCloudExtractor(url, referer) {
       const qualityStr = (_a = header.match(/(\d{3,4})[pP]/)) == null ? void 0 : _a[1];
       const quality = qualityStr ? parseInt(qualityStr) : 1080;
       const headerDetails = cleanTitle(header);
-      const labelExtras = (headerDetails ? `[${headerDetails}]` : "") + (size ? `[${size}]` : "");
       const sizeInBytes = (() => {
         const sizeMatch = size.match(/([\d.]+)\s*(GB|MB|KB)/i);
         if (!sizeMatch)
@@ -333,6 +409,10 @@ function loadExtractor(url, referer) {
         return yield hubCdnExtractor(url, referer);
       if (hostname.includes("pixeldrain"))
         return yield pixelDrainExtractor(url);
+      if (hostname.includes("hblinks") || hostname.includes("hubstream.dad"))
+        return yield hbLinksExtractor(url);
+      if (hostname.includes("hubstream") || hostname.includes("vidstack"))
+        return yield vidStackExtractor(url);
       if (hostname.includes("hubdrive")) {
         const res = yield fetch(url, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }) });
         const data = yield res.text();
@@ -442,6 +522,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
                 url: link.url,
                 quality: qualityStr,
                 size: sizeStr,
+                subtitles: link.subtitles,
                 provider: "4khdhub"
               });
             });
