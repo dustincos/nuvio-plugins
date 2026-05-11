@@ -1,5 +1,4 @@
 import cheerio from 'cheerio-without-node-native';
-import CryptoJS from 'crypto-js';
 import { getIndexQuality, atob, rot13, cleanTitle, HEADERS } from './utils.js';
 
 export async function getRedirectLinks(url) {
@@ -55,53 +54,46 @@ export async function vidStackExtractor(url) {
         const response = await fetch(apiUrl, { headers: { ...HEADERS, Referer: url } });
         const encoded = (await response.text()).trim();
 
-        const key = CryptoJS.enc.Utf8.parse("kiemtienmua911ca");
-        const ivs = ["1234567890oiuytr", "0123456789abcdef"];
-
-        for (const ivStr of ivs) {
-            try {
-                const iv = CryptoJS.enc.Utf8.parse(ivStr);
-                const decrypted = CryptoJS.AES.decrypt(
-                    { ciphertext: CryptoJS.enc.Hex.parse(encoded) },
-                    key,
-                    { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
-                );
-                const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
-                if (decryptedText && decryptedText.includes("source")) {
-                    const m3u8 = decryptedText.match(/"source":"(.*?)"/)?.[1]?.replace(/\\/g, '');
-
-                    // Extract subtitles
-                    const subtitles = [];
-                    const subtitleSection = decryptedText.match(/"subtitle":\{(.*?)\}/)?.[1];
-                    if (subtitleSection) {
-                        const subtitlePattern = /"([^"]+)":\s*"([^"]+)"/g;
-                        let subMatch;
-                        while ((subMatch = subtitlePattern.exec(subtitleSection)) !== null) {
-                            const lang = subMatch[1];
-                            const subPath = subMatch[2].split("#")[0].replace(/\\/g, '');
-                            if (subPath) {
-                                subtitles.push({
-                                    language: lang,
-                                    url: subPath.startsWith("http") ? subPath : `${baseUrl}${subPath}`
-                                });
-                            }
-                        }
-                    }
-
-                    if (m3u8) {
-                        return [{
-                            source: "HubStream",
-                            quality: "M3U8",
-                            url: m3u8.replace("https:", "http:"),
-                            headers: {
-                                "Referer": url,
-                                "Origin": url.split('/').pop()
-                            },
-                            subtitles: subtitles
-                        }];
+        const decryptApi = "https://keys.smashystream.top/dec-vidstack";
+        const decryptRes = await fetch(decryptApi, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "User-Agent": HEADERS["User-Agent"]
+            },
+            body: JSON.stringify({ text: encoded, type: "1" })
+        });
+        
+        const decryptedJson = await decryptRes.json();
+        const resultObject = decryptedJson.result;
+        
+        if (resultObject && resultObject.source) {
+            const m3u8 = resultObject.source.replace(/\\/g, '');
+            
+            const subtitles = [];
+            if (resultObject.subtitle) {
+                const subtitleObject = resultObject.subtitle;
+                for (const lang of Object.keys(subtitleObject)) {
+                    const subPath = subtitleObject[lang].split("#")[0].replace(/\\/g, '');
+                    if (subPath) {
+                        subtitles.push({
+                            language: lang,
+                            url: subPath.startsWith("http") ? subPath : `${baseUrl}${subPath}`
+                        });
                     }
                 }
-            } catch (e) { }
+            }
+
+            return [{
+                source: "HubStream",
+                quality: "M3U8",
+                url: m3u8.replace("https:", "http:"),
+                headers: {
+                    "Referer": url,
+                    "Origin": url.split('/').pop()
+                },
+                subtitles: subtitles
+            }];
         }
         return [];
     } catch (e) { return []; }

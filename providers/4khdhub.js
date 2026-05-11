@@ -1,6 +1,6 @@
 /**
  * 4khdhub - Built from src/4khdhub/
- * Generated: 2026-05-11T13:40:34.191Z
+ * Generated: 2026-05-11T13:43:18.788Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -139,7 +139,6 @@ function cleanTitle(title) {
 
 // src/4khdhub/extractors.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-var import_crypto_js = __toESM(require("crypto-js"));
 function getRedirectLinks(url) {
   return __async(this, null, function* () {
     try {
@@ -186,57 +185,48 @@ function getRedirectLinks(url) {
 }
 function vidStackExtractor(url) {
   return __async(this, null, function* () {
-    var _a, _b, _c;
     try {
       const hash = url.split("#").pop().split("/").pop();
       const baseUrl = new URL(url).origin;
       const apiUrl = `${baseUrl}/api/v1/video?id=${hash}`;
       const response = yield fetch(apiUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: url }) });
       const encoded = (yield response.text()).trim();
-      const key = import_crypto_js.default.enc.Utf8.parse("kiemtienmua911ca");
-      const ivs = ["1234567890oiuytr", "0123456789abcdef"];
-      for (const ivStr of ivs) {
-        try {
-          const iv = import_crypto_js.default.enc.Utf8.parse(ivStr);
-          const decrypted = import_crypto_js.default.AES.decrypt(
-            { ciphertext: import_crypto_js.default.enc.Hex.parse(encoded) },
-            key,
-            { iv, mode: import_crypto_js.default.mode.CBC, padding: import_crypto_js.default.pad.Pkcs7 }
-          );
-          const decryptedText = decrypted.toString(import_crypto_js.default.enc.Utf8);
-          if (decryptedText && decryptedText.includes("source")) {
-            const m3u8 = (_b = (_a = decryptedText.match(/"source":"(.*?)"/)) == null ? void 0 : _a[1]) == null ? void 0 : _b.replace(/\\/g, "");
-            const subtitles = [];
-            const subtitleSection = (_c = decryptedText.match(/"subtitle":\{(.*?)\}/)) == null ? void 0 : _c[1];
-            if (subtitleSection) {
-              const subtitlePattern = /"([^"]+)":\s*"([^"]+)"/g;
-              let subMatch;
-              while ((subMatch = subtitlePattern.exec(subtitleSection)) !== null) {
-                const lang = subMatch[1];
-                const subPath = subMatch[2].split("#")[0].replace(/\\/g, "");
-                if (subPath) {
-                  subtitles.push({
-                    language: lang,
-                    url: subPath.startsWith("http") ? subPath : `${baseUrl}${subPath}`
-                  });
-                }
-              }
-            }
-            if (m3u8) {
-              return [{
-                source: "HubStream",
-                quality: "M3U8",
-                url: m3u8.replace("https:", "http:"),
-                headers: {
-                  "Referer": url,
-                  "Origin": url.split("/").pop()
-                },
-                subtitles
-              }];
+      const decryptApi = "https://keys.smashystream.top/dec-vidstack";
+      const decryptRes = yield fetch(decryptApi, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": HEADERS["User-Agent"]
+        },
+        body: JSON.stringify({ text: encoded, type: "1" })
+      });
+      const decryptedJson = yield decryptRes.json();
+      const resultObject = decryptedJson.result;
+      if (resultObject && resultObject.source) {
+        const m3u8 = resultObject.source.replace(/\\/g, "");
+        const subtitles = [];
+        if (resultObject.subtitle) {
+          const subtitleObject = resultObject.subtitle;
+          for (const lang of Object.keys(subtitleObject)) {
+            const subPath = subtitleObject[lang].split("#")[0].replace(/\\/g, "");
+            if (subPath) {
+              subtitles.push({
+                language: lang,
+                url: subPath.startsWith("http") ? subPath : `${baseUrl}${subPath}`
+              });
             }
           }
-        } catch (e) {
         }
+        return [{
+          source: "HubStream",
+          quality: "M3U8",
+          url: m3u8.replace("https:", "http:"),
+          headers: {
+            "Referer": url,
+            "Origin": url.split("/").pop()
+          },
+          subtitles
+        }];
       }
       return [];
     } catch (e) {
