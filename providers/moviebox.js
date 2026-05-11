@@ -1,6 +1,6 @@
 /**
  * moviebox - Built from src/moviebox/
- * Generated: 2026-05-11T12:52:07.149Z
+ * Generated: 2026-05-11T12:58:57.216Z
  */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;

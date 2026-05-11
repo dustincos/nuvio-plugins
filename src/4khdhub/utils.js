@@ -51,9 +51,11 @@ export function cleanTitle(title) {
     .replace(/WEB[-_. ]?RIP/gi, "WEBRIP")
     .replace(/H[ .]?265/gi, "H265")
     .replace(/H[ .]?264/gi, "H264")
-    .replace(/DDP[ .]?([0-9]\.[0-9])/gi, "DDP$1");
+    .replace(/(DDP|DD\+|EAC3|AC3)[ .]?([0-9][._ ]?[0-9])/gi, "$1$2")
+    .replace(/(DDP|DD\+|EAC3|AC3)[ .]?([0-9])/gi, "$1$2")
+    .replace(/([0-9])[._ ]([0-9])(?=(?:p|GB|MB|KB))/gi, "$1.$2");
 
-  const parts = normalized.split(/[\s_.]/);
+  const parts = normalized.split(/[\s_.\[\]()]/);
   
   const sourceTags = new Set(["WEB-DL", "WEBRIP", "BLURAY", "HDRIP", "DVDRIP", "HDTV", "CAM", "TS", "BRRIP", "BDRIP"]);
   const codecTags = new Set(["H264", "H265", "X264", "X265", "HEVC", "AVC"]);

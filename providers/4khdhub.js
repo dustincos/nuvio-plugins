@@ -1,6 +1,6 @@
 /**
  * 4khdhub - Built from src/4khdhub/
- * Generated: 2026-05-11T12:52:07.117Z
+ * Generated: 2026-05-11T12:58:57.188Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -111,8 +111,8 @@ function rot13(value) {
 }
 function cleanTitle(title) {
   let name = title.replace(/\.[a-zA-Z0-9]{2,4}$/, "");
-  const normalized = name.replace(/WEB[-_. ]?DL/gi, "WEB-DL").replace(/WEB[-_. ]?RIP/gi, "WEBRIP").replace(/H[ .]?265/gi, "H265").replace(/H[ .]?264/gi, "H264").replace(/DDP[ .]?([0-9]\.[0-9])/gi, "DDP$1");
-  const parts = normalized.split(/[\s_.]/);
+  const normalized = name.replace(/WEB[-_. ]?DL/gi, "WEB-DL").replace(/WEB[-_. ]?RIP/gi, "WEBRIP").replace(/H[ .]?265/gi, "H265").replace(/H[ .]?264/gi, "H264").replace(/(DDP|DD\+|EAC3|AC3)[ .]?([0-9][._ ]?[0-9])/gi, "$1$2").replace(/(DDP|DD\+|EAC3|AC3)[ .]?([0-9])/gi, "$1$2").replace(/([0-9])[._ ]([0-9])(?=(?:p|GB|MB|KB))/gi, "$1.$2");
+  const parts = normalized.split(/[\s_.\[\]()]/);
   const sourceTags = /* @__PURE__ */ new Set(["WEB-DL", "WEBRIP", "BLURAY", "HDRIP", "DVDRIP", "HDTV", "CAM", "TS", "BRRIP", "BDRIP"]);
   const codecTags = /* @__PURE__ */ new Set(["H264", "H265", "X264", "X265", "HEVC", "AVC"]);
   const audioTags = ["AAC", "AC3", "DTS", "MP3", "FLAC", "DD", "DDP", "EAC3"];
@@ -433,7 +433,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
             extracted.forEach((link) => {
               const qualityStr = typeof link.quality === "number" ? `${link.quality}p` : link.quality;
               const sizeStr = link.size ? `${(link.size / (1024 * 1024 * 1024)).toFixed(2)} GB` : "";
-              const tagsStr = link.tags ? link.tags.split(" ").filter((t) => t).join(" \u2022 ") : "";
+              const tagsStr = link.tags ? link.tags.trim() : "";
               const nameParts = [link.server || link.source || "HubCloud", tagsStr].filter((p) => p && p.trim() !== "");
               const titleParts = [qualityStr, sizeStr].filter((p) => p && p.trim() !== "");
               streams.push({

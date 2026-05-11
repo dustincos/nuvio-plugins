@@ -110,7 +110,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                     extracted.forEach(link => {
                         const qualityStr = typeof link.quality === 'number' ? `${link.quality}p` : link.quality;
                         const sizeStr = link.size ? `${(link.size / (1024 * 1024 * 1024)).toFixed(2)} GB` : "";
-                        const tagsStr = link.tags ? link.tags.split(' ').filter(t => t).join(' • ') : "";
+                        const tagsStr = link.tags ? link.tags.trim() : "";
                         
                         const nameParts = [link.server || link.source || "HubCloud", tagsStr].filter(p => p && p.trim() !== "");
                         const titleParts = [qualityStr, sizeStr].filter(p => p && p.trim() !== "");
