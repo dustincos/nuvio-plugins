@@ -2,14 +2,6 @@
 
 High-performance streaming providers/plugins for Nuvio.
 
-## Providers
-
-- **NetMirror** - Integrated rapid streaming search (Netflix, PV, HS).
-- **MovieBox** - Extensive multi-language global movie database.
-- **Xpass** - Ultra-fast HLS stream aggregator.
-- **NoTorrent** - Non-P2P direct resolution proxy.
-- **4Khdhub** - Comprehensive HubCloud multi-host aggregator (FSL, Mega, Pixeldrain).
-
 ## Installation
 
 ### For Development
