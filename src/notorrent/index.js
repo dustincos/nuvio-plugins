@@ -52,6 +52,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                 title: quality,
                 url: item.url,
                 quality: quality,
+                type: item.url.includes(".m3u8") ? "m3u8" : item.url.includes(".mp4") || item.url.includes(".mkv") ? "video" : null,
                 headers: Object.keys(headers).length > 0 ? headers : undefined,
                 provider: "notorrent"
             });

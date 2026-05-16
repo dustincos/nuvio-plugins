@@ -35,6 +35,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
             title: "Adaptive",
             url: playlist,
             quality: "Auto",
+            type: "m3u8",
             headers: {
                 "User-Agent": HEADERS["User-Agent"],
                 "Referer": `${VIDLINK_API}/`,

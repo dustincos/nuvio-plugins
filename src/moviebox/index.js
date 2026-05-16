@@ -163,6 +163,7 @@ async function fetchMovieboxStreams(title, mediaType, season, episode) {
                             title: qualityStr,
                             url: dlink,
                             quality: qualityStr,
+                            type: dlink.includes(".m3u8") ? "m3u8" : dlink.includes(".mp4") || dlink.includes(".mkv") ? "video" : null,
                             headers: {
                                 "Referer": "https://fmoviesunblocked.net/",
                                 "Origin": "https://fmoviesunblocked.net"

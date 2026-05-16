@@ -1,6 +1,6 @@
 /**
  * videasy - Built from src/videasy/
- * Generated: 2026-05-16T18:34:14.002Z
+ * Generated: 2026-05-16T18:53:08.242Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -88,6 +88,15 @@ function getIndexQuality(qualityStr) {
     return "360p";
   return qualityStr;
 }
+function getStreamType(url) {
+  if (!url)
+    return null;
+  if (url.includes(".m3u8"))
+    return "m3u8";
+  if (url.includes(".mp4") || url.includes(".mkv"))
+    return "video";
+  return null;
+}
 
 // src/videasy/index.js
 function getStreams(tmdbId, mediaType, season, episode) {
@@ -156,6 +165,7 @@ function fetchFromServer(server, encTitle, isMovie, media, tmdbId, season, episo
           title: `${qualityLabel}`,
           url: sourceUrl,
           quality: qualityLabel,
+          type: getStreamType(sourceUrl),
           headers: HEADERS,
           provider: "videasy"
         });

@@ -33,3 +33,10 @@ export function getIndexQuality(qualityStr) {
     if (q.includes("360")) return "360p";
     return qualityStr;
 }
+
+export function getStreamType(url) {
+    if (!url) return null;
+    if (url.includes(".m3u8")) return "m3u8";
+    if (url.includes(".mp4") || url.includes(".mkv")) return "video";
+    return null;
+}

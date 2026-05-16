@@ -1,6 +1,6 @@
 /**
  * xpass - Built from src/xpass/
- * Generated: 2026-05-16T18:34:14.006Z
+ * Generated: 2026-05-16T18:53:08.246Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -120,6 +120,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
                   title: v.quality,
                   url: v.url,
                   quality: v.quality,
+                  type: "m3u8",
                   headers: {
                     "Referer": `${XPASS_API}/`,
                     "User-Agent": BASE_HEADERS["User-Agent"]
@@ -133,6 +134,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
                 title: "Auto",
                 url: fileUrl,
                 quality: "Auto",
+                type: fileUrl.includes(".mp4") || fileUrl.includes(".mkv") ? "video" : null,
                 headers: {
                   "Referer": `${XPASS_API}/`,
                   "User-Agent": BASE_HEADERS["User-Agent"]

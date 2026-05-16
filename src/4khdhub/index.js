@@ -115,6 +115,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                             url: link.url,
                             quality: qualityStr,
                             size: sizeStr,
+                            type: link.url.includes(".m3u8") ? "m3u8" : link.url.includes(".mp4") || link.url.includes(".mkv") ? "video" : null,
                             provider: "4khdhub"
                         });
                     });

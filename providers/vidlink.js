@@ -1,6 +1,6 @@
 /**
  * vidlink - Built from src/vidlink/
- * Generated: 2026-05-16T18:34:14.005Z
+ * Generated: 2026-05-16T18:53:08.245Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -61,6 +61,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
         title: "Adaptive",
         url: playlist,
         quality: "Auto",
+        type: "m3u8",
         headers: {
           "User-Agent": HEADERS["User-Agent"],
           "Referer": `${VIDLINK_API}/`,

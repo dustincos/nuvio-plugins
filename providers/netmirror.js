@@ -1,6 +1,6 @@
 /**
  * netmirror - Built from src/netmirror/
- * Generated: 2026-05-16T18:34:13.998Z
+ * Generated: 2026-05-16T18:53:08.237Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -151,6 +151,7 @@ function extractServiceStreams(apiBase, service, rawTitle, mediaType, season, ep
         title: "Auto",
         url: playerData.video_link,
         quality: "Auto",
+        type: playerData.video_link.includes(".m3u8") ? "m3u8" : playerData.video_link.includes(".mp4") || playerData.video_link.includes(".mkv") ? "video" : null,
         headers: {
           "Referer": playerData.referer || "",
           "User-Agent": headers["user-agent"]

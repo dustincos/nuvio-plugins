@@ -122,6 +122,7 @@ async function fetchServerStream(server, streamBaseUrl, authedHeaders) {
             title: `${serverDesc || quality}`,
             url: fileUrl,
             quality: quality,
+            type: fileUrl.includes(".m3u8") ? "m3u8" : fileUrl.includes(".mp4") || fileUrl.includes(".mkv") ? "video" : null,
             headers: authedHeaders,
             provider: "vidfast"
         }];

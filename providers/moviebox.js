@@ -1,6 +1,6 @@
 /**
  * moviebox - Built from src/moviebox/
- * Generated: 2026-05-16T18:34:13.996Z
+ * Generated: 2026-05-16T18:53:08.236Z
  */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -217,6 +217,7 @@ function fetchMovieboxStreams(title, mediaType, season, episode) {
                 title: qualityStr,
                 url: dlink,
                 quality: qualityStr,
+                type: dlink.includes(".m3u8") ? "m3u8" : dlink.includes(".mp4") || dlink.includes(".mkv") ? "video" : null,
                 headers: {
                   "Referer": "https://fmoviesunblocked.net/",
                   "Origin": "https://fmoviesunblocked.net"

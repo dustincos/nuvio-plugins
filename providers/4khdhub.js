@@ -1,6 +1,6 @@
 /**
  * 4khdhub - Built from src/4khdhub/
- * Generated: 2026-05-16T18:34:13.958Z
+ * Generated: 2026-05-16T18:53:08.180Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -514,6 +514,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
                 url: link.url,
                 quality: qualityStr,
                 size: sizeStr,
+                type: link.url.includes(".m3u8") ? "m3u8" : link.url.includes(".mp4") || link.url.includes(".mkv") ? "video" : null,
                 provider: "4khdhub"
               });
             });

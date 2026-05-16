@@ -1,6 +1,6 @@
 /**
  * autoembed - Built from src/autoembed/
- * Generated: 2026-05-16T18:34:13.995Z
+ * Generated: 2026-05-16T18:53:08.234Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -139,6 +139,7 @@ function extractFromEmbed(embedUrl) {
             title: "Adaptive",
             url: urlMatch[1],
             quality: "Auto",
+            type: "m3u8",
             headers: { "Referer": embedUrl, "Origin": origin, "User-Agent": HEADERS["User-Agent"] },
             provider: "autoembed"
           });
@@ -153,6 +154,7 @@ function extractFromEmbed(embedUrl) {
             title: "Direct",
             url: urlMatch[1],
             quality: "Auto",
+            type: "video",
             headers: { "Referer": embedUrl, "Origin": origin, "User-Agent": HEADERS["User-Agent"] },
             provider: "autoembed"
           });
@@ -178,6 +180,7 @@ function extractFromEmbed(embedUrl) {
               title: "Adaptive",
               url: nestedM3u8[1],
               quality: "Auto",
+              type: "m3u8",
               headers: { "Referer": nestedSrc, "Origin": nestedOrigin, "User-Agent": HEADERS["User-Agent"] },
               provider: "autoembed"
             });
@@ -189,6 +192,7 @@ function extractFromEmbed(embedUrl) {
               title: "Direct",
               url: nestedMp4[1],
               quality: "Auto",
+              type: "video",
               headers: { "Referer": nestedSrc, "Origin": nestedOrigin, "User-Agent": HEADERS["User-Agent"] },
               provider: "autoembed"
             });

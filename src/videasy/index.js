@@ -1,5 +1,5 @@
 import { VIDEASY_API, DECRYPT_API, HEADERS, SERVERS } from './constants.js';
-import { getMediaDetails, doubleEncode, capitalizeServer, getIndexQuality } from './utils.js';
+import { getMediaDetails, doubleEncode, capitalizeServer, getIndexQuality, getStreamType } from './utils.js';
 
 async function getStreams(tmdbId, mediaType, season, episode) {
     console.log(`[Videasy] Fetching streams for ${mediaType} ${tmdbId}`);
@@ -81,6 +81,7 @@ async function fetchFromServer(server, encTitle, isMovie, media, tmdbId, season,
                 title: `${qualityLabel}`,
                 url: sourceUrl,
                 quality: qualityLabel,
+                type: getStreamType(sourceUrl),
                 headers: HEADERS,
                 provider: "videasy"
             });

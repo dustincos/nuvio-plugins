@@ -77,6 +77,7 @@ async function extractFromEmbed(embedUrl) {
                     title: "Adaptive",
                     url: urlMatch[1],
                     quality: "Auto",
+                    type: "m3u8",
                     headers: { "Referer": embedUrl, "Origin": origin, "User-Agent": HEADERS["User-Agent"] },
                     provider: "autoembed"
                 });
@@ -92,6 +93,7 @@ async function extractFromEmbed(embedUrl) {
                     title: "Direct",
                     url: urlMatch[1],
                     quality: "Auto",
+                    type: "video",
                     headers: { "Referer": embedUrl, "Origin": origin, "User-Agent": HEADERS["User-Agent"] },
                     provider: "autoembed"
                 });
@@ -120,6 +122,7 @@ async function extractFromEmbed(embedUrl) {
                         title: "Adaptive",
                         url: nestedM3u8[1],
                         quality: "Auto",
+                        type: "m3u8",
                         headers: { "Referer": nestedSrc, "Origin": nestedOrigin, "User-Agent": HEADERS["User-Agent"] },
                         provider: "autoembed"
                     });
@@ -132,6 +135,7 @@ async function extractFromEmbed(embedUrl) {
                         title: "Direct",
                         url: nestedMp4[1],
                         quality: "Auto",
+                        type: "video",
                         headers: { "Referer": nestedSrc, "Origin": nestedOrigin, "User-Agent": HEADERS["User-Agent"] },
                         provider: "autoembed"
                     });

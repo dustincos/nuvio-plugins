@@ -65,6 +65,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                                 title: v.quality,
                                 url: v.url,
                                 quality: v.quality,
+                                type: "m3u8",
                                 headers: {
                                     "Referer": `${XPASS_API}/`,
                                     "User-Agent": BASE_HEADERS["User-Agent"]
@@ -78,6 +79,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                             title: "Auto",
                             url: fileUrl,
                             quality: "Auto",
+                            type: fileUrl.includes(".mp4") || fileUrl.includes(".mkv") ? "video" : null,
                             headers: {
                                 "Referer": `${XPASS_API}/`,
                                 "User-Agent": BASE_HEADERS["User-Agent"]

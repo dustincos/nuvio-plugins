@@ -80,6 +80,7 @@ async function extractFromIframe(iframeUrl) {
                     title: "Adaptive",
                     url: urlMatch[1],
                     quality: "Auto",
+                    type: "m3u8",
                     headers: {
                         "Referer": iframeUrl,
                         "Origin": new URL(iframeUrl).origin,
@@ -99,6 +100,7 @@ async function extractFromIframe(iframeUrl) {
                     title: "Direct",
                     url: urlMatch[1],
                     quality: "Auto",
+                    type: "video",
                     headers: {
                         "Referer": iframeUrl,
                         "Origin": new URL(iframeUrl).origin,
@@ -130,6 +132,7 @@ async function extractFromIframe(iframeUrl) {
                         title: "Adaptive",
                         url: nestedM3u8[1],
                         quality: "Auto",
+                        type: "m3u8",
                         headers: {
                             "Referer": nestedSrc,
                             "Origin": new URL(nestedSrc).origin,
@@ -146,6 +149,7 @@ async function extractFromIframe(iframeUrl) {
                         title: "Direct",
                         url: nestedMp4[1],
                         quality: "Auto",
+                        type: "video",
                         headers: {
                             "Referer": nestedSrc,
                             "Origin": new URL(nestedSrc).origin,

@@ -1,6 +1,6 @@
 /**
  * playimdb - Built from src/playimdb/
- * Generated: 2026-05-16T18:34:14.000Z
+ * Generated: 2026-05-16T18:53:08.241Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -140,6 +140,7 @@ function extractFromIframe(iframeUrl) {
             title: "Adaptive",
             url: urlMatch[1],
             quality: "Auto",
+            type: "m3u8",
             headers: {
               "Referer": iframeUrl,
               "Origin": new URL(iframeUrl).origin,
@@ -158,6 +159,7 @@ function extractFromIframe(iframeUrl) {
             title: "Direct",
             url: urlMatch[1],
             quality: "Auto",
+            type: "video",
             headers: {
               "Referer": iframeUrl,
               "Origin": new URL(iframeUrl).origin,
@@ -186,6 +188,7 @@ function extractFromIframe(iframeUrl) {
               title: "Adaptive",
               url: nestedM3u8[1],
               quality: "Auto",
+              type: "m3u8",
               headers: {
                 "Referer": nestedSrc,
                 "Origin": new URL(nestedSrc).origin,
@@ -201,6 +204,7 @@ function extractFromIframe(iframeUrl) {
               title: "Direct",
               url: nestedMp4[1],
               quality: "Auto",
+              type: "video",
               headers: {
                 "Referer": nestedSrc,
                 "Origin": new URL(nestedSrc).origin,

@@ -1,6 +1,6 @@
 /**
  * vidfast - Built from src/vidfast/
- * Generated: 2026-05-16T18:34:14.004Z
+ * Generated: 2026-05-16T18:53:08.243Z
  */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -149,6 +149,7 @@ function fetchServerStream(server, streamBaseUrl, authedHeaders) {
         title: `${serverDesc || quality}`,
         url: fileUrl,
         quality,
+        type: fileUrl.includes(".m3u8") ? "m3u8" : fileUrl.includes(".mp4") || fileUrl.includes(".mkv") ? "video" : null,
         headers: authedHeaders,
         provider: "vidfast"
       }];

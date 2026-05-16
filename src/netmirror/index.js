@@ -121,6 +121,7 @@ async function extractServiceStreams(apiBase, service, rawTitle, mediaType, seas
             title: "Auto",
             url: playerData.video_link,
             quality: "Auto",
+            type: playerData.video_link.includes(".m3u8") ? "m3u8" : playerData.video_link.includes(".mp4") || playerData.video_link.includes(".mkv") ? "video" : null,
             headers: {
                 "Referer": playerData.referer || "",
                 "User-Agent": headers["user-agent"]
