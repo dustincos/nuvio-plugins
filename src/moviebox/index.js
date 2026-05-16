@@ -62,7 +62,6 @@ async function fetchMovieboxStreams(title, mediaType, season, episode) {
     const streams = [];
     
     try {
-        // Pre-hit step from Kotlin: app.get("$BASE_URL/wefeed-h5-bff/app/get-latest-app-pkgs?app_name=moviebox")
         await fetchWithHeaders(`${MOVIEBOX_API}/wefeed-h5-bff/app/get-latest-app-pkgs?app_name=moviebox`).catch(() => {});
 
         const subjectType = season != null ? 2 : 1;
@@ -126,7 +125,6 @@ async function fetchMovieboxStreams(title, mediaType, season, episode) {
 
         for (const { id: subjectId, language } of uniqueIdsWithLang) {
             try {
-                // 1. Get subject detail for detailPath
                 const detailResp = await fetchWithHeaders(`${MOVIEBOX_API}/wefeed-h5-bff/web/subject/detail?subjectId=${subjectId}`);
                 const detailJson = await detailResp.json();
                 const detailData = unwrapData(detailJson);
@@ -134,7 +132,6 @@ async function fetchMovieboxStreams(title, mediaType, season, episode) {
                 const subject = detailData.subject || {};
                 const detailPath = subject.detailPath || "";
                 
-                // 2. Setup download request
                 let params = `subjectId=${subjectId}`;
                 if (season != null) {
                     params += `&se=${season}&ep=${episode}`;

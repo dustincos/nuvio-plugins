@@ -1,6 +1,6 @@
 /**
  * netmirror - Built from src/netmirror/
- * Generated: 2026-05-11T13:43:18.798Z
+ * Generated: 2026-05-16T18:34:13.998Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -93,7 +93,7 @@ function extractServiceStreams(apiBase, service, rawTitle, mediaType, season, ep
     const title = rawTitle.trim();
     const headers = {
       "ott": service.code,
-      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0 /OS.GatuNewTV v1.0",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) rv:136.0) Gecko/20100101 Firefox/136.0 /OS.GatuNewTV v1.0",
       "x-requested-with": "NetmirrorNewTV v1.0"
     };
     console.log(`[NetMirror] Searching ${service.name} for "${title}"`);

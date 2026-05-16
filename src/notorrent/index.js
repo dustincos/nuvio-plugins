@@ -27,25 +27,21 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         const rawList = data.streams || [];
 
         rawList.forEach(item => {
-            // Filter out subscription promotion links
             if (item.externalUrl || !item.url) return;
             
-            // Skip github pages and known redirection links to be safe
             if (item.url.includes("github.com") || item.url.includes("googleusercontent")) return;
 
             const rawTitle = item.title || "";
-            const cleanTitleString = cleanText(rawTitle); // removes 🔒 emojis
+            const cleanTitleString = cleanText(rawTitle);
             
             const quality = extractQuality(cleanTitleString);
             
-            // Extract Language Parentheses Example: "1080p (ENGLISH)"
             let language = "Default";
             const langMatch = cleanTitleString.match(/\(([^)]+)\)/);
             if (langMatch) {
                 language = langMatch[1].charAt(0).toUpperCase() + langMatch[1].slice(1).toLowerCase();
             }
 
-            // Collect standard behaviorHint headers if they ever show up in future API expansions
             const proxyHeaders = item.behaviorHints?.proxyHeaders?.request || {};
             const headers = Object.assign({}, item.behaviorHints?.headers || {}, proxyHeaders);
 

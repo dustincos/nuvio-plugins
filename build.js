@@ -6,7 +6,8 @@ const EXTERNAL_MODULES = [
     'cheerio-without-node-native',
     'react-native-cheerio',
     'cheerio',
-    'crypto-js'
+    'crypto-js',
+    'axios'
 ];
 
 async function build() {

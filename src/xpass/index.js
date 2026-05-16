@@ -6,18 +6,15 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const streams = [];
 
     try {
-        // Construct source URL
         const embedUrl = mediaType === 'tv' 
             ? `${XPASS_API}/e/tv/${tmdbId}/${season}/${episode}`
             : `${XPASS_API}/e/movie/${tmdbId}`;
 
         console.log(`[Xpass] Navigating to Embed: ${embedUrl}`);
         
-        // 1. Get HTML from embed endpoint
         const resp = await fetch(embedUrl, { headers: BASE_HEADERS });
         const html = await resp.text();
         
-        // 2. Extract backups
         const backupsMatch = html.match(/var backups\s*=\s*(\[.*?\])\s*(?:;|<\/script>)/s);
         if (!backupsMatch) {
             console.log(`[Xpass] No backups variable found in page source.`);
@@ -34,7 +31,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         
         console.log(`[Xpass] Found ${backups.length} servers.`);
         
-        // 3. Iterate backups sequentially and fetch stream sources
         for (const backup of backups) {
             try {
                 const serverName = backup.name || "Default";
@@ -47,11 +43,9 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                 
                 console.log(`[Xpass] Fetching JSON from backup server: ${serverUrl}`);
                 
-                // Fetch the json describing the playlist
                 const jsonResp = await fetch(serverUrl, { headers: BASE_HEADERS });
                 const data = await jsonResp.json();
                 
-                // Access the primary source in first playlist entry
                 const playlist = data.playlist || [];
                 if (playlist.length === 0) continue;
                 
@@ -67,7 +61,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                         const variants = await generateM3u8(serverName, fileUrl, BASE_HEADERS);
                         variants.forEach(v => {
                             streams.push({
-                                name: serverName,
+                                name: `Xpass [${serverName}]`,
                                 title: v.quality,
                                 url: v.url,
                                 quality: v.quality,
@@ -80,7 +74,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                         });
                     } else {
                         streams.push({
-                            name: serverName,
+                            name: `Xpass [${serverName}]`,
                             title: "Auto",
                             url: fileUrl,
                             quality: "Auto",
@@ -93,11 +87,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                     }
                 }
                 
-                // Break early if we found valid results to respond faster
-                if (streams.length > 0) {
-                    console.log(`[Xpass] Found functional stream on ${serverName}, stopping search.`);
-                    break;
-                }
+                
             } catch (srvErr) {
                 console.warn(`[Xpass] Failed querying server ${backup.name}:`, srvErr.message);
             }

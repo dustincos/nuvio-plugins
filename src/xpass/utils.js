@@ -29,7 +29,6 @@ export async function generateM3u8(streamName, masterUrl, headers = {}) {
             });
         }
         
-        // If regex fails or yields 0 variants, fallback to returning the master itself
         if (results.length === 0) {
             return [{ quality: 'Auto', url: masterUrl }];
         }

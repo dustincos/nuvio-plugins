@@ -36,7 +36,8 @@
       "filename": "providers/moviebox.js",
       "enabled": true,
       "formats": [
-        "mp4"
+        "mp4",
+        "mpd"
       ],
       "logo": "https://www.google.com/s2/favicons?domain=moviebox.ph&sz=128",
       "contentLanguage": [
@@ -102,6 +103,111 @@
       ],
       "formats": [
         "mp4"
+      ]
+    },
+    {
+      "id": "videasy",
+      "name": "Videasy",
+      "description": "Multi-server streaming via VideoEasy",
+      "version": "1.0.0",
+      "author": "Dustico",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/videasy.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4",
+        "mkv"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=videasy.net&sz=128",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "vidfast",
+      "name": "VidFast",
+      "description": "Multi-server streaming via VidFast Pro",
+      "version": "1.0.0",
+      "author": "Dustico",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/vidfast.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=vidfast.pro&sz=128",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "vidlink",
+      "name": "Vidlink",
+      "description": "Adaptive HLS streaming via Vidlink",
+      "version": "1.0.0",
+      "author": "Dustico",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/vidlink.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=vidlink.pro&sz=128",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "playimdb",
+      "name": "PlayImdb",
+      "description": "Stream movies and shows via IMDB embeds",
+      "version": "1.0.0",
+      "author": "Dustico",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/playimdb.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=streamimdb.me&sz=128",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "autoembed",
+      "name": "AutoEmbed",
+      "description": "Multi-source auto-embed streaming",
+      "version": "1.0.0",
+      "author": "Dustico",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/autoembed.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=autoembed.app&sz=128",
+      "contentLanguage": [
+        "en"
       ]
     }
   ]

@@ -2,7 +2,6 @@ import cheerio from 'cheerio-without-node-native';
 import { getLatestDomains, TMDB_API_KEY } from './utils.js';
 import { loadExtractor } from './extractors.js';
 
-// Utility to obtain English TMDB metadata needed for the textual search fallback
 async function getMediaMetadata(tmdbId, mediaType) {
     try {
         const type = mediaType === 'tv' ? 'tv' : 'movie';
@@ -25,12 +24,10 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     const streams = [];
 
     try {
-        // 1. Resolve dynamic domains
         const domains = await getLatestDomains();
         const base4k = domains["4khdhub"] || "https://4khdhub.link";
         const baseHub = domains["hubcloud"] || "https://hubcloud.foo";
 
-        // 2. Get clean Title and Year to feed into the textual search endpoint
         const meta = await getMediaMetadata(tmdbId, mediaType);
         if (!meta.title) return [];
 
@@ -44,14 +41,15 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
         let detailPageUrl = "";
 
-        // Find first card match that strictly mentions the title
         $search('div.card-grid > a').each((i, el) => {
             const content = $search(el).find('div.movie-card-content').text().toLowerCase();
             const href = $search(el).attr('href');
 
-            if (content.includes(meta.title.toLowerCase())) {
+            const matchTitle = meta.title ? content.includes(meta.title.toLowerCase()) : true;
+            const matchYear = meta.year ? content.includes(meta.year) : true;
+            if (matchTitle && matchYear) {
                 detailPageUrl = href;
-                return false; // break loop
+                return false;
             }
         });
 
@@ -60,7 +58,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
             return [];
         }
 
-        // Handle relative urls
         if (!detailPageUrl.startsWith("http")) {
             detailPageUrl = base4k.replace(/\/+$/, '') + "/" + detailPageUrl.replace(/^\/+/, '');
         }
@@ -79,14 +76,12 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                 if (href) linksToProcess.push(href);
             });
         } else {
-            // TV Format logic (match season and episode strings e.g. S01E01)
             const sStr = String(season).padStart(2, '0');
             const eStr = String(episode).padStart(2, '0');
             const targetTag = `S${sStr}E${eStr}`;
 
             console.log(`[4Khdhub] Locating specific episode code: ${targetTag}`);
 
-            // Search for the container box that contains our target SXXEXX string
             $page('div.episode-download-item').each((i, el) => {
                 const rowHtml = $page(el).html();
                 if (rowHtml && rowHtml.includes(targetTag)) {
@@ -100,7 +95,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
         console.log(`[4Khdhub] Identified ${linksToProcess.length} raw download anchors to follow.`);
 
-        // Step 3: Multi-phase extraction loop
         for (let entryUrl of linksToProcess) {
             try {
                 console.log(`[DEBUG] Processing anchor: ${entryUrl}`);
@@ -121,7 +115,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
                             url: link.url,
                             quality: qualityStr,
                             size: sizeStr,
-                            subtitles: link.subtitles,
                             provider: "4khdhub"
                         });
                     });

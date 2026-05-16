@@ -17,7 +17,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
         const apiBase = await getNfMirrorApi();
         console.log(`[NetMirror] Resolved API base: ${apiBase}`);
 
-        // Attempt extraction concurrently across available services (nf, pv, hs) to be fast
         const promises = OTT_SERVICES.map(service => 
             extractServiceStreams(apiBase, service, title, mediaType, season, episode)
                 .catch(e => {
@@ -28,7 +27,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
         const results = await Promise.all(promises);
         
-        // Flatten result list
         for (const list of results) {
             finalStreams.push(...list);
         }
@@ -47,19 +45,17 @@ async function extractServiceStreams(apiBase, service, rawTitle, mediaType, seas
     
     const headers = {
         "ott": service.code,
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0 /OS.GatuNewTV v1.0",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) rv:136.0) Gecko/20100101 Firefox/136.0 /OS.GatuNewTV v1.0",
         "x-requested-with": "NetmirrorNewTV v1.0"
     };
 
     console.log(`[NetMirror] Searching ${service.name} for "${title}"`);
 
-    // 1. Fetch Search Response
     const searchUrl = `${apiBase}/search.php?s=${encodeURIComponent(title)}`;
     const searchResp = await fetch(searchUrl, { headers });
     const searchJson = await searchResp.json();
     
     const searchResults = searchJson.searchResult || [];
-    // Perform case-insensitive string match just like Kotlin
     const match = searchResults.find(item => item.t && item.t.trim().toLowerCase() === title.toLowerCase());
     
     if (!match || !match.id) {
@@ -70,11 +66,9 @@ async function extractServiceStreams(apiBase, service, rawTitle, mediaType, seas
     const netId = match.id;
     let finalId = netId;
 
-    // 2. Handle TV Shows depth traversal
     if (mediaType === 'tv') {
         console.log(`[NetMirror] TV Match on ${service.name} (ID: ${netId}), drilling down to S${season}E${episode}`);
         
-        // Get post details to extract Season IDs
         const postResp = await fetch(`${apiBase}/post.php?id=${netId}`, { headers });
         const postData = await postResp.json();
         
@@ -91,7 +85,6 @@ async function extractServiceStreams(apiBase, service, rawTitle, mediaType, seas
         let episodeId = null;
         let page = 1;
         
-        // Max iterate 10 pages matching Kotlin
         while (!episodeId && page < 10) {
             console.log(`[NetMirror] Paging episodes list (Page ${page}) on ${service.name}`);
             const epResp = await fetch(`${apiBase}/episodes.php?id=${seasonId}&page=${page}`, { headers });
@@ -104,7 +97,6 @@ async function extractServiceStreams(apiBase, service, rawTitle, mediaType, seas
                 episodeId = epMatch.id;
             }
             
-            // Break if no nextPage flag
             if (parseInt(epData.nextPageShow) !== 1) {
                 break;
             }
@@ -119,7 +111,6 @@ async function extractServiceStreams(apiBase, service, rawTitle, mediaType, seas
         finalId = episodeId;
     }
 
-    // 3. Fetch final player video link
     console.log(`[NetMirror] Fetching final stream payload for ID ${finalId} on ${service.name}`);
     const playerResp = await fetch(`${apiBase}/player.php?id=${finalId}`, { headers });
     const playerData = await playerResp.json();

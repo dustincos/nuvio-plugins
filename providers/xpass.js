@@ -1,6 +1,6 @@
 /**
  * xpass - Built from src/xpass/
- * Generated: 2026-05-11T13:43:18.800Z
+ * Generated: 2026-05-16T18:34:14.006Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -116,7 +116,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
               const variants = yield generateM3u8(serverName, fileUrl, BASE_HEADERS);
               variants.forEach((v) => {
                 streams.push({
-                  name: serverName,
+                  name: `Xpass [${serverName}]`,
                   title: v.quality,
                   url: v.url,
                   quality: v.quality,
@@ -129,7 +129,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
               });
             } else {
               streams.push({
-                name: serverName,
+                name: `Xpass [${serverName}]`,
                 title: "Auto",
                 url: fileUrl,
                 quality: "Auto",
@@ -140,10 +140,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
                 provider: "xpass"
               });
             }
-          }
-          if (streams.length > 0) {
-            console.log(`[Xpass] Found functional stream on ${serverName}, stopping search.`);
-            break;
           }
         } catch (srvErr) {
           console.warn(`[Xpass] Failed querying server ${backup.name}:`, srvErr.message);

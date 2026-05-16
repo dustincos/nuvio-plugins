@@ -1,6 +1,6 @@
 /**
  * 4khdhub - Built from src/4khdhub/
- * Generated: 2026-05-11T13:43:18.788Z
+ * Generated: 2026-05-16T18:34:13.958Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -220,10 +220,10 @@ function vidStackExtractor(url) {
         return [{
           source: "HubStream",
           quality: "M3U8",
-          url: m3u8.replace("https:", "http:"),
+          url: m3u8,
           headers: {
             "Referer": url,
-            "Origin": url.split("/").pop()
+            "Origin": new URL(url).origin
           },
           subtitles
         }];
@@ -455,7 +455,9 @@ function getStreams(tmdbId, mediaType, season, episode) {
       $search("div.card-grid > a").each((i, el) => {
         const content = $search(el).find("div.movie-card-content").text().toLowerCase();
         const href = $search(el).attr("href");
-        if (content.includes(meta.title.toLowerCase())) {
+        const matchTitle = meta.title ? content.includes(meta.title.toLowerCase()) : true;
+        const matchYear = meta.year ? content.includes(meta.year) : true;
+        if (matchTitle && matchYear) {
           detailPageUrl = href;
           return false;
         }
@@ -512,7 +514,6 @@ function getStreams(tmdbId, mediaType, season, episode) {
                 url: link.url,
                 quality: qualityStr,
                 size: sizeStr,
-                subtitles: link.subtitles,
                 provider: "4khdhub"
               });
             });

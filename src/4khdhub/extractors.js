@@ -87,10 +87,10 @@ export async function vidStackExtractor(url) {
             return [{
                 source: "HubStream",
                 quality: "M3U8",
-                url: m3u8.replace("https:", "http:"),
+                url: m3u8,
                 headers: {
                     "Referer": url,
-                    "Origin": url.split('/').pop()
+                    "Origin": new URL(url).origin
                 },
                 subtitles: subtitles
             }];
