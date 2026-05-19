@@ -11,7 +11,10 @@ export async function generateM3u8(streamName, masterUrl, headers = {}) {
         let match;
         
         while ((match = regex.exec(text)) !== null) {
-            const res = match[1].split('x')[1] + 'p';
+            const height = parseInt(match[1].split('x')[1]);
+            if (height < 720) continue;
+            
+            const res = height + 'p';
             let url = match[2].trim();
             
             if (!url.startsWith('http')) {

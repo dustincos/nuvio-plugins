@@ -2,12 +2,15 @@
     "name": "nuvio-plugins",
     "version": "1.0.0",
     "description": "Streaming providers/plugins for Nuvio",
-    "main": "index.js",
     "scripts": {
-        "build": "node build.js"
+        "build": "node build.js",
+        "build:watch": "nodemon --watch src -e js,json --exec 'node build.js'",
+        "build:provider": "node build.js",
+        "build:minify": "node build.js --minify"
     },
     "devDependencies": {
-        "esbuild": "^0.20.0"
+        "esbuild": "^0.20.0",
+        "nodemon": "^3.0.0"
     },
     "dependencies": {
         "cheerio-without-node-native": "^0.20.2",

@@ -1,6 +1,6 @@
 /**
  * moviebox - Built from src/moviebox/
- * Generated: 2026-05-16T18:53:08.236Z
+ * Generated: 2026-05-19T15:45:43.170Z
  */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -210,6 +210,8 @@ function fetchMovieboxStreams(title, mediaType, season, episode) {
             const dlink = d.url;
             if (dlink) {
               const res = d.resolution || 720;
+              if (res < 720)
+                return;
               const qualityStr = `${res}p`;
               const nameParts = ["MovieBox", language].filter((p) => p && p.trim() !== "");
               streams.push({

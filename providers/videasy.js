@@ -1,6 +1,6 @@
 /**
  * videasy - Built from src/videasy/
- * Generated: 2026-05-16T18:53:08.242Z
+ * Generated: 2026-05-19T15:45:43.175Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -160,6 +160,8 @@ function fetchFromServer(server, encTitle, isMovie, media, tmdbId, season, episo
           continue;
         const quality = src.quality || "Auto";
         const qualityLabel = getIndexQuality(quality);
+        if (qualityLabel === "360p" || qualityLabel === "480p" || /^[1-6]\d{2}p$/.test(qualityLabel))
+          continue;
         streams.push({
           name: `Videasy [${serverLabel}]`,
           title: `${qualityLabel}`,

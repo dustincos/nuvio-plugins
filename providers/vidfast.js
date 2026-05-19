@@ -1,6 +1,6 @@
 /**
  * vidfast - Built from src/vidfast/
- * Generated: 2026-05-16T18:53:08.243Z
+ * Generated: 2026-05-19T15:45:43.176Z
  */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;

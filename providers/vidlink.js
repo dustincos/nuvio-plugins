@@ -1,6 +1,6 @@
 /**
  * vidlink - Built from src/vidlink/
- * Generated: 2026-05-16T18:53:08.245Z
+ * Generated: 2026-05-19T15:45:43.177Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {

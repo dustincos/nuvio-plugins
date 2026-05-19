@@ -76,6 +76,8 @@ async function fetchFromServer(server, encTitle, isMovie, media, tmdbId, season,
             const quality = src.quality || "Auto";
             const qualityLabel = getIndexQuality(quality);
 
+            if (qualityLabel === "360p" || qualityLabel === "480p" || /^[1-6]\d{2}p$/.test(qualityLabel)) continue;
+
             streams.push({
                 name: `Videasy [${serverLabel}]`,
                 title: `${qualityLabel}`,

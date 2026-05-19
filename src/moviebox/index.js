@@ -155,6 +155,8 @@ async function fetchMovieboxStreams(title, mediaType, season, episode) {
                     const dlink = d.url;
                     if (dlink) {
                         const res = d.resolution || 720;
+                        if (res < 720) return;
+                        
                         const qualityStr = `${res}p`;
                         const nameParts = ["MovieBox", language].filter(p => p && p.trim() !== "");
 

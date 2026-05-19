@@ -1,6 +1,6 @@
 /**
  * xpass - Built from src/xpass/
- * Generated: 2026-05-16T18:53:08.246Z
+ * Generated: 2026-05-19T15:45:43.178Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -42,7 +42,10 @@ function generateM3u8(_0, _1) {
       const regex = /#EXT-X-STREAM-INF:.*?RESOLUTION=(\d+x\d+).*?\n([^\n]+)/g;
       let match;
       while ((match = regex.exec(text)) !== null) {
-        const res = match[1].split("x")[1] + "p";
+        const height = parseInt(match[1].split("x")[1]);
+        if (height < 720)
+          continue;
+        const res = height + "p";
         let url = match[2].trim();
         if (!url.startsWith("http")) {
           if (url.startsWith("/")) {

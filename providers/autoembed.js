@@ -1,6 +1,6 @@
 /**
  * autoembed - Built from src/autoembed/
- * Generated: 2026-05-16T18:53:08.234Z
+ * Generated: 2026-05-19T15:45:43.168Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
